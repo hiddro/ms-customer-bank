@@ -14,7 +14,11 @@ public class RouterConfig {
 
     @Bean
     public RouterFunction<ServerResponse> routes(CustomerHandler customerHandler){
-        return route(POST("/api/customer"), customerHandler::createCustomer)
+        return route(GET("/getAll"), customerHandler::getAllCustomer)
+                .andRoute(GET("/getById/{id}"), customerHandler::getByIdCustomer)
+                .andRoute(POST("/create/{code}"), customerHandler::createCustomer)
+                .andRoute(PUT("/update/{id}"), customerHandler::updateCustomer)
+                .andRoute(DELETE("/delete/{id}"), customerHandler::deleteCustomer)
                 .andRoute(GET("/customerType/getAll"), customerHandler::getAllCustomerType)
                 .andRoute(POST("/customerType/create"), customerHandler::createCustomerType)
                 .andRoute(DELETE("/customerType/delete/{id}"), customerHandler::deleteCustomerType);
