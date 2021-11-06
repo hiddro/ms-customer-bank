@@ -21,6 +21,8 @@ public class CustomerHandler {
     @Autowired
     private ICustomerTypeService customerTypeService;
 
+    /*Customer - Rest*/
+
     public Mono<ServerResponse> createCustomer(ServerRequest request){
 
         Mono<Customer> customerMono = request.bodyToMono(Customer.class);
@@ -33,6 +35,13 @@ public class CustomerHandler {
                         .switchIfEmpty(ServerResponse.badRequest().build()));
     }
 
+    /*Customer Type - Rest*/
+
+    public Mono<ServerResponse> getAllCustomerType(ServerRequest request){
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(customerTypeService.getAllCustomertype(), CustomerType.class);
+    }
+
     public Mono<ServerResponse> createCustomerType(ServerRequest request){
 
         Mono<CustomerType> customerTypeMono = request.bodyToMono(CustomerType.class);
@@ -43,5 +52,24 @@ public class CustomerHandler {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(c))
                         .switchIfEmpty(ServerResponse.badRequest().build()));
+    }
+
+    public Mono<ServerResponse> deleteCustomerType(ServerRequest request){
+
+        String id = request.pathVariable("id");
+
+        Mono<CustomerType> customerTypeMono = customerTypeService.findById(id);
+
+        return customerTypeMono.flatMap(customerType -> customerTypeService.deleteCustomerType(customerType.getId()))
+                .flatMap(c -> ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(c))
+                        .switchIfEmpty(ServerResponse.badRequest().build()));
+
+//        return yankiMono
+//                .doOnNext(c -> log.info("delete account yanki: ", c.getId()))
+//                .flatMap(c -> yankiService.delete(c).then(ServerResponse.noContent().build()))
+//                .switchIfEmpty(ServerResponse.notFound().build());
     }
 }

@@ -15,6 +15,8 @@ public class RouterConfig {
     @Bean
     public RouterFunction<ServerResponse> routes(CustomerHandler customerHandler){
         return route(POST("/api/customer"), customerHandler::createCustomer)
-                .andRoute(POST("/api/customerType"), customerHandler::createCustomerType);
+                .andRoute(GET("/customerType/getAll"), customerHandler::getAllCustomerType)
+                .andRoute(POST("/customerType/create"), customerHandler::createCustomerType)
+                .andRoute(DELETE("/customerType/delete/{id}"), customerHandler::deleteCustomerType);
     }
 }

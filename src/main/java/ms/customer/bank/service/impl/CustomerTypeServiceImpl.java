@@ -26,8 +26,8 @@ public class CustomerTypeServiceImpl implements ICustomerTypeService {
     }
 
     @Override
-    public Mono<CustomerType> findById(String s) {
-        return null;
+    public Mono<CustomerType> findById(String id) {
+        return customerTypeRepository.findById(id);
     }
 
     @Override
@@ -43,5 +43,16 @@ public class CustomerTypeServiceImpl implements ICustomerTypeService {
     @Override
     public Mono<CustomerType> saveCustomerType(CustomerType customerType) {
         return customerTypeRepository.save(customerType);
+    }
+
+    @Override
+    public Flux<CustomerType> getAllCustomertype() {
+        return customerTypeRepository.findAll();
+    }
+
+    @Override
+    public Mono<Void> deleteCustomerType(String id) {
+
+        return customerTypeRepository.deleteById(id);
     }
 }
