@@ -83,7 +83,7 @@ public class CustomerServiceImpl implements ICustomerService {
                     existCustomer.setEmail(customer.getEmail());
                     existCustomer.setCustomerType(customer.getCustomerType());
                     return customerRepository.save(existCustomer);
-                }).switchIfEmpty(Mono.empty());
+                }).switchIfEmpty(Mono.just(Customer.builder().build()));
     }
 
     @Override

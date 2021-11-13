@@ -14,7 +14,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 		description = "documentacion de servicios para Customers"
 ))
 public class MsCustomerBankApplication {
-
+	
 	public static void main(String[] args) {
 		SpringApplication.run(MsCustomerBankApplication.class, args);
 	}

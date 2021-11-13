@@ -33,7 +33,8 @@ public class CustomerHandler {
         String id = request.pathVariable("id");
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(customerService.getByIdCustomer(id), CustomerType.class);
+                .body(customerService.getByIdCustomer(id), CustomerType.class)
+                .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
     public Mono<ServerResponse> createCustomer(ServerRequest request){
