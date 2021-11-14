@@ -22,12 +22,12 @@ public class CustomerServiceImpl implements ICustomerService {
 
     @Override
     public Mono<Customer> create(Customer o) {
-        return null;
+        return customerRepository.save(o);
     }
 
     @Override
     public Flux<Customer> findAll() {
-        return null;
+        return customerRepository.findAll();
     }
 
     @Override
@@ -37,12 +37,12 @@ public class CustomerServiceImpl implements ICustomerService {
 
     @Override
     public Mono<Customer> update(Customer o) {
-        return null;
+        return customerRepository.save(o);
     }
 
     @Override
     public Mono<Void> delete(Customer o) {
-        return null;
+        return customerRepository.delete(o);
     }
 
     @Override

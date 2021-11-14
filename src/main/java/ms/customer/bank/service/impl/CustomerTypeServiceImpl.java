@@ -17,12 +17,12 @@ public class CustomerTypeServiceImpl implements ICustomerTypeService {
 
     @Override
     public Mono<CustomerType> create(CustomerType o) {
-        return null;
+        return customerTypeRepository.save(o);
     }
 
     @Override
     public Flux<CustomerType> findAll() {
-        return null;
+        return customerTypeRepository.findAll();
     }
 
     @Override
@@ -32,12 +32,12 @@ public class CustomerTypeServiceImpl implements ICustomerTypeService {
 
     @Override
     public Mono<CustomerType> update(CustomerType o) {
-        return null;
+        return customerTypeRepository.save(o);
     }
 
     @Override
     public Mono<Void> delete(CustomerType o) {
-        return null;
+        return customerTypeRepository.delete(o);
     }
 
     @Override
