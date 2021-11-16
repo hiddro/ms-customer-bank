@@ -5,11 +5,13 @@ import ms.customer.bank.documents.entities.CustomerType;
 import ms.customer.bank.service.ICustomerService;
 import ms.customer.bank.service.ICustomerTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -34,6 +36,15 @@ public class CustomerHandler {
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(customerService.getByIdCustomer(id), CustomerType.class)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer no Encontrado")));
+    }
+
+    public Mono<ServerResponse> getByIdentity(ServerRequest request){
+
+        String identity = request.pathVariable("customerIdentityNumber");
+
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(customerService.getBydIdentity(identity), CustomerType.class)
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 

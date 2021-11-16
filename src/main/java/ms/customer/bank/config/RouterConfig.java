@@ -282,6 +282,7 @@ public class RouterConfig {
     public RouterFunction<ServerResponse> routes(CustomerHandler customerHandler){
         return route(GET("/getAll"), customerHandler::getAllCustomer)
                 .andRoute(GET("/getById/{id}"), customerHandler::getByIdCustomer)
+                .andRoute(GET("/getByIdentity/{customerIdentityNumber}"), customerHandler::getByIdentity)
                 .andRoute(POST("/create/{code}"), customerHandler::createCustomer)
                 .andRoute(PUT("/update/{id}"), customerHandler::updateCustomer)
                 .andRoute(DELETE("/delete/{id}"), customerHandler::deleteCustomer)

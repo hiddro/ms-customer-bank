@@ -11,6 +11,8 @@ public interface ICustomerService extends ICrudService<Customer, String>{
 
     Mono<Customer> getByIdCustomer(String id);
 
+    Mono<Customer> getBydIdentity(String identity);
+
     Mono<Customer> updateCustomer (String id, Customer customer);
 
     Mono<Void> deleteCustomer (String id);

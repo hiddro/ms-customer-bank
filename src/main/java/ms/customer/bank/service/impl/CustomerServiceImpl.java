@@ -67,7 +67,21 @@ public class CustomerServiceImpl implements ICustomerService {
 
     @Override
     public Mono<Customer> getByIdCustomer(String id) {
-        return customerRepository.findById(id);
+
+        Customer custom = new Customer();
+        Mono<Customer> cust = customerRepository.findById(id).switchIfEmpty(Mono.just(Customer.builder().build()));
+
+        return cust.flatMap(c -> {
+            if(c.getId() == null){
+                return Mono.empty();
+            }
+            return Mono.just(c);
+        });
+    }
+
+    @Override
+    public Mono<Customer> getBydIdentity(String identity) {
+        return customerRepository.findByCustomerIdentityNumber(identity);
     }
 
     @Override
