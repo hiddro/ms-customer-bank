@@ -4,6 +4,7 @@ import ms.customer.bank.documents.entities.Customer;
 import ms.customer.bank.documents.entities.CustomerType;
 import ms.customer.bank.service.ICustomerService;
 import ms.customer.bank.service.ICustomerTypeService;
+import org.apache.http.protocol.ResponseServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,18 +35,24 @@ public class CustomerHandler {
 
         String id = request.pathVariable("id");
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(customerService.getByIdCustomer(id), CustomerType.class)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer no Encontrado")));
+        return customerService.getByIdCustomer(id)
+                .flatMap(c -> ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(c)))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> getByIdentity(ServerRequest request){
 
         String identity = request.pathVariable("customerIdentityNumber");
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(customerService.getBydIdentity(identity), CustomerType.class)
-                .switchIfEmpty(ServerResponse.badRequest().build());
+        return customerService.getBydIdentity(identity)
+                .flatMap(c -> ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(c)))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> createCustomer(ServerRequest request){
@@ -58,8 +65,8 @@ public class CustomerHandler {
                 .flatMap(c -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(c))
-                        .switchIfEmpty(ServerResponse.badRequest().build()));
+                        .body(BodyInserters.fromValue(c)))
+                .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
     public Mono<ServerResponse> updateCustomer(ServerRequest request){
@@ -72,8 +79,8 @@ public class CustomerHandler {
                 .flatMap(c -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(c))
-                        .switchIfEmpty(ServerResponse.badRequest().build()));
+                        .body(BodyInserters.fromValue(c)))
+                .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
     public Mono<ServerResponse> deleteCustomer(ServerRequest request){
@@ -86,8 +93,8 @@ public class CustomerHandler {
                 .flatMap(c -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(c))
-                        .switchIfEmpty(ServerResponse.badRequest().build()));
+                        .body(BodyInserters.fromValue(c)))
+                .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
     /*Customer Type - Rest*/
@@ -105,8 +112,8 @@ public class CustomerHandler {
                 .flatMap(c -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(c))
-                        .switchIfEmpty(ServerResponse.badRequest().build()));
+                        .body(BodyInserters.fromValue(c)))
+                .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
     public Mono<ServerResponse> deleteCustomerType(ServerRequest request){
@@ -119,7 +126,7 @@ public class CustomerHandler {
                 .flatMap(c -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(c))
-                        .switchIfEmpty(ServerResponse.badRequest().build()));
+                        .body(BodyInserters.fromValue(c)))
+                .switchIfEmpty(ServerResponse.badRequest().build());
     }
 }
