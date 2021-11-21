@@ -84,6 +84,39 @@ public class RouterConfig {
                     )
             ),
             @RouterOperation(
+                    path = "/getByIdentity/{customerIdentityNumber}",
+                    produces = {
+                            MediaType.APPLICATION_JSON_VALUE
+                    },
+                    method = RequestMethod.GET,
+                    beanClass = CustomerHandler.class,
+                    beanMethod = "getByIdentity",
+                    operation = @Operation(
+                            operationId = "getByIdentity",
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "Operación Satisfactoria",
+                                            content = @Content(
+                                                    schema = @Schema(
+                                                            implementation = Customer.class
+                                                    )
+                                            )
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "404",
+                                            description = "Customer con el numero de identidad no se encontro"
+                                    )
+                            },
+                            parameters = {
+                                    @Parameter(
+                                            in = ParameterIn.PATH,
+                                            name = "customerIdentityNumber"
+                                    )
+                            }
+                    )
+            ),
+            @RouterOperation(
                     path = "/create/{code}",
                     produces = {
                             MediaType.APPLICATION_JSON_VALUE
