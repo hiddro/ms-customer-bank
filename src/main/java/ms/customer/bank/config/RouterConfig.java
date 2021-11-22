@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import ms.customer.bank.documents.dto.CustomerDto;
 import ms.customer.bank.documents.entities.Customer;
 import ms.customer.bank.documents.entities.CustomerType;
 import ms.customer.bank.handler.CustomerHandler;
@@ -106,6 +107,39 @@ public class RouterConfig {
                                     @ApiResponse(
                                             responseCode = "404",
                                             description = "Customer con el numero de identidad no se encontro"
+                                    )
+                            },
+                            parameters = {
+                                    @Parameter(
+                                            in = ParameterIn.PATH,
+                                            name = "customerIdentityNumber"
+                                    )
+                            }
+                    )
+            ),
+            @RouterOperation(
+                    path = "/getAllAccounts/{customerIdentityNumber}",
+                    produces = {
+                            MediaType.APPLICATION_JSON_VALUE
+                    },
+                    method = RequestMethod.GET,
+                    beanClass = CustomerHandler.class,
+                    beanMethod = "getAllAcounts",
+                    operation = @Operation(
+                            operationId = "getAllAcounts",
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "Operación Satisfactoria",
+                                            content = @Content(
+                                                    schema = @Schema(
+                                                            implementation = CustomerDto.class
+                                                    )
+                                            )
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "404",
+                                            description = "Customer con el numero de identidad no tiene cuentas"
                                     )
                             },
                             parameters = {
