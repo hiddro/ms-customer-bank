@@ -1,9 +1,12 @@
 package ms.customer.bank.service.impl;
 
+import ms.customer.bank.documents.dto.AccountsDto;
+import ms.customer.bank.documents.dto.CustomerDto;
 import ms.customer.bank.documents.entities.Customer;
 import ms.customer.bank.documents.entities.CustomerType;
 import ms.customer.bank.repository.CustomerRepository;
 import ms.customer.bank.repository.CustomerTypeRepository;
+import ms.customer.bank.service.IAccountsService;
 import ms.customer.bank.service.ICrudService;
 import ms.customer.bank.service.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +14,17 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CustomerServiceImpl implements ICustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private IAccountsService accountsService;
 
     @Autowired
     private CustomerTypeRepository customerTypeRepository;
@@ -63,6 +72,57 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     public Flux<Customer> getAllCustomer() {
         return customerRepository.findAll();
+    }
+
+    @Override
+    public Mono<CustomerDto> getAllAccounts(String identity) {
+        CustomerDto customerDto = new CustomerDto();
+
+        return customerRepository.findByCustomerIdentityNumber(identity).flatMap(c -> {
+            if(c.getId() == null){
+                return Mono.empty();
+            }
+            customerDto.setId(c.getId());
+            customerDto.setName(c.getName());
+            customerDto.setCustomerIdentityType(c.getCustomerIdentityType());
+            customerDto.setCustomerIdentityNumber(c.getCustomerIdentityNumber());
+            List<AccountsDto> listaCuentas = new ArrayList<>();
+
+            return accountsService.getFixedTerm(identity).flatMap(fixed -> {
+                AccountsDto fixedAccount = new AccountsDto();
+                fixedAccount.setId(fixed.getId());
+                fixedAccount.setAccountNumber(fixed.getAccountNumber());
+                fixedAccount.setTypeOfAccount(fixed.getTypeOfAccount());
+                fixedAccount.setCustomerIdentityNumber(fixed.getCustomerIdentityNumber());
+                fixedAccount.setAmount(fixed.getAmount());
+                listaCuentas.add(fixedAccount);
+
+                return accountsService.getSaving(identity).flatMap(saving -> {
+                    AccountsDto savingAccount = new AccountsDto();
+                    savingAccount.setId(saving.getId());
+                    savingAccount.setAccountNumber(saving.getAccountNumber());
+                    savingAccount.setTypeOfAccount(saving.getTypeOfAccount());
+                    savingAccount.setCustomerIdentityNumber(saving.getCustomerIdentityNumber());
+                    savingAccount.setAmount(saving.getAmount());
+                    listaCuentas.add(savingAccount);
+
+                    return accountsService.getCurrent(identity).flatMap(current -> {
+                        AccountsDto currentAccount = new AccountsDto();
+                        currentAccount.setId(current.getId());
+                        currentAccount.setAccountNumber(current.getAccountNumber());
+                        currentAccount.setTypeOfAccount(current.getTypeOfAccount());
+                        currentAccount.setCustomerIdentityNumber(current.getCustomerIdentityNumber());
+                        currentAccount.setAmount(current.getAmount());
+                        listaCuentas.add(currentAccount);
+
+                        customerDto.setAccounts(listaCuentas);
+
+                        return Mono.just(customerDto);
+                    });
+                });
+            });
+
+        });
     }
 
     @Override

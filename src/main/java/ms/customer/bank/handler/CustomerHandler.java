@@ -31,6 +31,17 @@ public class CustomerHandler {
                 .body(customerService.getAllCustomer(), CustomerType.class);
     }
 
+    public Mono<ServerResponse> getAllAcounts(ServerRequest request){
+        String identity = request.pathVariable("customerIdentityNumber");
+
+        return customerService.getAllAccounts(identity)
+                .flatMap(c -> ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(c)))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
     public Mono<ServerResponse> getByIdCustomer(ServerRequest request){
 
         String id = request.pathVariable("id");
