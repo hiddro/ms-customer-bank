@@ -9,5 +9,5 @@ public interface ICustomerTypeService extends ICrudService<CustomerType, String>
 
     Flux<CustomerType> getAllCustomertype();
 
-    Mono<Void> deleteCustomerType (String id);
+    Mono<CustomerType> deleteCustomerType (String id);
 }
